@@ -26,7 +26,7 @@ $(BIN)/package-versions: lib/package-versions.js
 
 test: build
 	$(ENTER)
-	$(MOCHA) $(MOCHA_ARGS) && $(LEAVE) || $(FAIL)
+	@$(MOCHA) $(MOCHA_ARGS) && $(LEAVE) || $(FAIL)
 
 tag:
 	git tag v`coffee -e "console.log JSON.parse(require('fs').readFileSync 'package.json').version"`
@@ -48,13 +48,14 @@ setup:
 # (if you are testing with some older version), "touch .package-versions" before
 # you run "make <something>", so this automated dependency does not kick in.
 .package-versions: package.json node_modules/*/package.json $(BIN)/package-versions
+#	0 = up to date | 1 = need to update | 2 = abort; failed dependency urls
 	$(ENTER)
-#	0 - up to date : 1 - update : 2 - abort : 127 - missing coffee:
 	@node $(BIN)/package-versions -- --dump > $@ ; case $$? in \
 	  0) cat $@ ;; \
-	  1|127) rm $@ \
+	  1) rm $@ \
 	   ; echo '*** Running \x1B[32mmake setup\x1B[39m for you ***' \
 	   ; make setup ;; \
+	  127) rm $@ ; echo '*** Please install node! ***' ; false ;; \
 	  *) false ;; \
 	esac && \
 	$(LEAVE) || $(FAIL)
