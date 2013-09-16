@@ -16,9 +16,9 @@ all: build test tag publish
 
 build: .package-versions $(LIB)
 
-lib/%.js: src/%.coffee
+lib/%.js: src/%.coffee Makefile
 	@mkdir -p "$(@D)"
-	$(COFFEE) <"$<" >"$@"
+	(echo '#! /usr/bin/env node' ; $(COFFEE) <"$<") >"$@"
 
 $(BIN)/package-versions: lib/package-versions.js
 	cp "$<" "$@"
