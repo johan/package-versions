@@ -1,6 +1,6 @@
 { "name": "package-versions"
 , "license": "MIT"
-, "version": "0.0.1"
+, "version": "0.0.2"
 , "author": "Johan Sundström <oyasumi@gmail.com>"
 , "description": "Helps auto-update node projects as npm dependencies change"
 , "repository":
@@ -12,8 +12,8 @@
   { "test": "make test"
   }
 , "dependencies":
-  { "async" : "0.2.9"
-  , "glob"  : "3.1.14"
+  { "async": "0.2.9"
+  , "glob": "3.1.14"
   , "semver": "2.0.10"
   }
 , "devDependencies":
@@ -24,9 +24,5 @@
   }
 , "publishConfig":
   { "registry": "http://npmjs.org/"
-  }
-, "repository":
-  { "type": "git"
-  , "url": "git://github.com/johan/package-versions"
   }
 }
