@@ -36,6 +36,31 @@ publish:
 		(echo 'Error: Make ~/.npmrc point at npmjs.org!' >&2 ; false)
 	npm publish . --registry http://npmjs.org
 
+assert-on-clean-master: .package-versions
+	@[[ "`git rev-parse --abbrev-ref HEAD`" = "master" ]] || \
+		$(call ERROR,"Not on master branch")
+	@git diff --exit-code --name-status || \
+		$(call ERROR,"Uncommitted changes!")
+
+release-patch: assert-on-clean-master
+release-minor: assert-on-clean-master
+release-major: assert-on-clean-master
+release-patch: BUMP = patch
+release-minor: BUMP = minor
+release-major: BUMP = major
+release-patch: release
+release-minor: release
+release-major: release
+
+release:
+	(export VERSION=`echo 'path = "./package.json"; p = require(path);' \
+		'p.version = require("semver").inc(p.version, "'$(BUMP)'");' \
+		'require("fs").writeFileSync(path, require("./lib/json")(p));' \
+		'console.log(p.version);' \
+		| node` ; \
+	git commit package.json -m "$$VERSION" && \
+	git tag -m "$$VERSION" -a "v$$VERSION" && \
+	git push origin "v$$VERSION")
 
 # Bootstrap the app for development, auto-installing node_modules if not present
 node_modules/*/package.json:
@@ -72,4 +97,8 @@ endef
 
 define FAIL
 	(echo '[41m[30m   FAILURE: make' $@ '  [39m[49m' ; echo ; false)
+endef
+
+define ERROR
+	(echo '[41m[30m   '$(1)'   [39m[49m' 1>&2; false)
 endef
