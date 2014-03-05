@@ -23,6 +23,6 @@
   { "node": ">=0.8"
   }
 , "publishConfig":
-  { "registry": "http://npmjs.org/"
+  { "registry": "http://registry.npmjs.org/"
   }
 }
