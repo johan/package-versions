@@ -32,7 +32,7 @@ tag:
 	git tag v`coffee -e "console.log JSON.parse(require('fs').readFileSync 'package.json').version"`
 
 publish:
-	@egrep -q '^registry = http://npmjs.org/$$' $$HOME/.npmrc || \
+	@egrep -q '^registry = http://registry.npmjs.org/$$' $$HOME/.npmrc || \
 		(echo 'Error: Make ~/.npmrc point at npmjs.org!' >&2 ; false)
 	npm publish . --registry http://npmjs.org
 
